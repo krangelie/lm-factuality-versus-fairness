@@ -1,6 +1,6 @@
 # Factuality versus Fairness: Evaluating Bias in Knowledge-enhanced LMs
 
-This repository contains a collection of intrinsic and downstream tasks to evaluate biases in 
+This repository contains an in-depth comparative analysis of biases in 
 knowledge-enhanced language models (LMs). 
 
 ## Evaluation results
