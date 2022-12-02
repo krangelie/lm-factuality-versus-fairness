@@ -144,7 +144,6 @@ class StereoSetRunner:
                         attention_mask=attention_mask,
                         token_type_ids=token_type_ids,
                     )[0].softmax(dim=-1)
-                    print(output)
                 output = output[mask_idxs]
 
             output = output.index_select(1, next_token).diag()

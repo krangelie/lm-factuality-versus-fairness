@@ -92,7 +92,7 @@ if __name__ == "__main__":
     print(f" - batch_size: {args.batch_size}")
     print(f" - seed: {args.seed}")
 
-    model = transformers.AutoModel.from_pretrained(args.model_name_or_path)
+    model = transformers.AutoModelForMaskedLM.from_pretrained(args.model_name_or_path)
     model.eval()
     tokenizer = transformers.AutoTokenizer.from_pretrained(args.model_name_or_path)
 
