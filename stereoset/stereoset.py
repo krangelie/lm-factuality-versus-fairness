@@ -110,59 +110,29 @@ class StereoSetRunner:
         for (
             sentence_id,
             next_token,
-            input_ids,
-            attention_mask,
-            token_type_ids,
-            target_tokens,
-            entity_ids,
-            entity_position_ids,
-            entity_attention_mask
+            inputs,
+            #input_ids,
+            #attention_mask,
+            #token_type_ids,
+            target_tokens
         ) in tqdm(loader, total=len(loader)):
             # Start by converting everything to a tensor.
-            input_ids = torch.stack(input_ids).to(device).transpose(0, 1)
-            attention_mask = torch.stack(attention_mask).to(device).transpose(0, 1)
+            #input_ids = torch.stack(input_ids).to(device).transpose(0, 1)
+            #attention_mask = torch.stack(attention_mask).to(device).transpose(0, 1)
             next_token = next_token.to(device)
-            token_type_ids = torch.stack(token_type_ids).to(device).transpose(0, 1)
-            entity_ids = torch.stack(entity_ids).to(device).transpose(0, 1)
-            entity_position_ids = torch.stack(entity_position_ids[0]).to(device).transpose(0, 1)
-            entity_attention_mask = torch.stack(entity_attention_mask).to(device).transpose(0, 1)
+            #token_type_ids = torch.stack(token_type_ids).to(device).transpose(0, 1)
 
 
 
-            mask_idxs = input_ids == self._mask_token_id
+            mask_idxs = inputs["input_ids"] == self._mask_token_id
 
-            if self._is_self_debias:
-                # Get the logits for the masked token using self-debiasing.
-                debiasing_prefixes = [DEBIASING_PREFIXES[self._bias_type]]
-                with torch.no_grad():
-                    hidden_states = (
-                        self._intrasentence_model.get_token_logits_self_debiasing(
-                            input_ids,
-                            debiasing_prefixes=debiasing_prefixes,
-                            decay_constant=50,
-                            epsilon=0.01,
-                        )
-                    )
-                output = hidden_states.softmax(dim=-1).unsqueeze(0)
-            else:
-                with torch.no_grad():
-                    # Get the probabilities.
-                    if "luke" in self._model_name_or_path:
-                        output = model(
-                            input_ids=input_ids,
-                            attention_mask=attention_mask,
-                            token_type_ids=token_type_ids,
-                            entity_ids=entity_ids,
-                            entity_position_ids=entity_position_ids,
-                            entity_attention_mask=entity_attention_mask
-                        )[0].softmax(dim=-1)
-                    else:
-                        output = model(
-                            input_ids=input_ids,
-                            attention_mask=attention_mask,
-                            token_type_ids=token_type_ids,
-                        )[0].softmax(dim=-1)
-                output = output[mask_idxs]
+            # TODO: Figure out why tensors in tokenizer output are 3-dim
+
+            with torch.no_grad():
+                # Get the probabilities.
+                output = model(input_ids=inputs["input_ids"][0].to(device), attention_mask=inputs["attention_mask"][0].to(device))[0].softmax(dim=-1)
+
+            output = output[mask_idxs[0]]
 
             output = output.index_select(1, next_token).diag()
 
