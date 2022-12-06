@@ -114,12 +114,20 @@ class StereoSetRunner:
             attention_mask,
             token_type_ids,
             target_tokens,
+            entity_ids,
+            entity_position_ids,
+            entity_attention_mask
         ) in tqdm(loader, total=len(loader)):
             # Start by converting everything to a tensor.
             input_ids = torch.stack(input_ids).to(device).transpose(0, 1)
             attention_mask = torch.stack(attention_mask).to(device).transpose(0, 1)
             next_token = next_token.to(device)
             token_type_ids = torch.stack(token_type_ids).to(device).transpose(0, 1)
+            entity_ids = torch.stack(entity_ids).to(device).transpose(0, 1)
+            entity_position_ids = torch.stack(entity_position_ids[0]).to(device).transpose(0, 1)
+            entity_attention_mask = torch.stack(entity_attention_mask).to(device).transpose(0, 1)
+
+
 
             mask_idxs = input_ids == self._mask_token_id
 
@@ -139,11 +147,21 @@ class StereoSetRunner:
             else:
                 with torch.no_grad():
                     # Get the probabilities.
-                    output = model(
-                        input_ids,
-                        attention_mask=attention_mask,
-                        token_type_ids=token_type_ids,
-                    )[0].softmax(dim=-1)
+                    if "luke" in self._model_name_or_path:
+                        output = model(
+                            input_ids=input_ids,
+                            attention_mask=attention_mask,
+                            token_type_ids=token_type_ids,
+                            entity_ids=entity_ids,
+                            entity_position_ids=entity_position_ids,
+                            entity_attention_mask=entity_attention_mask
+                        )[0].softmax(dim=-1)
+                    else:
+                        output = model(
+                            input_ids=input_ids,
+                            attention_mask=attention_mask,
+                            token_type_ids=token_type_ids,
+                        )[0].softmax(dim=-1)
                 output = output[mask_idxs]
 
             output = output.index_select(1, next_token).diag()

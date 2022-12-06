@@ -50,28 +50,49 @@ class IntrasentenceLoader(object):
                     insertion_string = f"{insertion}{self._mask_token}"
                     new_sentence = cluster.context.replace("BLANK", insertion_string)
                     next_token = insertion_tokens[idx]
+
                     self._sentences.append(
-                        (new_sentence, sentence.ID, next_token, target_tokens)
+                            (new_sentence, sentence.ID, next_token, target_tokens, cluster.entity_span)
                     )
 
     def __len__(self):
         return len(self._sentences)
 
     def __getitem__(self, idx):
-        sentence, sentence_id, next_token, target_tokens = self._sentences[idx]
+        sentence, sentence_id, next_token, target_tokens, entity_span = self._sentences[idx]
         text = sentence
         text_pair = None
-        tokens_dict = self._tokenizer.encode_plus(
-            text,
-            text_pair=text_pair,
-            add_special_tokens=True,
-            max_length=self._max_seq_length,
-            pad_to_max_length=self._pad_to_max_length,
-            return_token_type_ids=True,
-            return_attention_mask=True,
-            return_overflowing_tokens=False,
-            return_special_tokens_mask=False,
-        )
+        if "luke" in self._model_name_or_path:
+            tokens_dict = self._tokenizer.encode_plus(
+                text,
+                text_pair=text_pair,
+                add_special_tokens=True,
+                max_length=self._max_seq_length,
+                pad_to_max_length=self._pad_to_max_length,
+                return_token_type_ids=True,
+                return_attention_mask=True,
+                return_overflowing_tokens=False,
+                return_special_tokens_mask=False,
+                entity_spans=[entity_span],
+            )
+            entity_ids = tokens_dict["entity_ids"]
+            entity_position_ids = tokens_dict["entity_position_ids"]
+            entity_attention_mask = tokens_dict["entity_attention_mask"]
+        else:
+            tokens_dict = self._tokenizer.encode_plus(
+                text,
+                text_pair=text_pair,
+                add_special_tokens=True,
+                max_length=self._max_seq_length,
+                pad_to_max_length=self._pad_to_max_length,
+                return_token_type_ids=True,
+                return_attention_mask=True,
+                return_overflowing_tokens=False,
+                return_special_tokens_mask=False,
+            )
+            entity_ids = None
+            entity_position_ids = None
+            entity_attention_mask = None
         input_ids = tokens_dict["input_ids"]
         attention_mask = tokens_dict["attention_mask"]
         token_type_ids = tokens_dict["token_type_ids"]
@@ -82,6 +103,9 @@ class IntrasentenceLoader(object):
             attention_mask,
             token_type_ids,
             target_tokens,
+            entity_ids,
+            entity_position_ids,
+            entity_attention_mask
         )
 
 
@@ -112,6 +136,7 @@ class StereoSet(object):
                 labels = []
                 for label in sentence["labels"]:
                     labels.append(Label(**label))
+
                 sentence_obj = Sentence(
                     sentence["id"], sentence["sentence"], labels, sentence["gold_label"]
                 )
@@ -126,12 +151,16 @@ class StereoSet(object):
                     str.maketrans("", "", string.punctuation)
                 )
                 sentences.append(sentence_obj)
+                # find entity span for target word (needed for Luke)
+                entity_span_start = sentence["sentence"].find(example["target"])
+                entity_span_end = entity_span_start + len(example["target"])
             created_example = IntrasentenceExample(
                 example["id"],
                 example["bias_type"],
                 example["target"],
                 example["context"],
                 sentences,
+                (entity_span_start,entity_span_end)
             )
             created_examples.append(created_example)
         return created_examples
@@ -141,7 +170,7 @@ class StereoSet(object):
 
 
 class Example(object):
-    def __init__(self, ID, bias_type, target, context, sentences):
+    def __init__(self, ID, bias_type, target, context, sentences, entity_span):
         """A generic example.
 
         Args:
@@ -158,6 +187,8 @@ class Example(object):
         self.target = target
         self.context = context
         self.sentences = sentences
+        self.entity_span = entity_span
+
 
     def __str__(self):
         s = f"Domain: {self.bias_type} - Target: {self.target} \r\n"
@@ -209,11 +240,11 @@ class Label(object):
 
 
 class IntrasentenceExample(Example):
-    def __init__(self, ID, bias_type, target, context, sentences):
+    def __init__(self, ID, bias_type, target, context, sentences, entity_span):
         """Implements the Example class for an intrasentence example.
 
         See Example's docstring for more information.
         """
         super(IntrasentenceExample, self).__init__(
-            ID, bias_type, target, context, sentences
+            ID, bias_type, target, context, sentences, entity_span
         )
