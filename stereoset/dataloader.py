@@ -65,13 +65,13 @@ class IntrasentenceLoader(object):
 
         inputs = self._tokenizer(
             text,
-            #text_pair=text_pair,
+            text_pair=text_pair,
             add_special_tokens=True,
             padding=True,
             #max_length=self._max_seq_length,
             #pad_to_max_length=self._pad_to_max_length,
-            #return_token_type_ids=True,
-            #return_attention_mask=True,
+            return_token_type_ids=True,
+            return_attention_mask=True,
             #return_overflowing_tokens=False,
             #return_special_tokens_mask=False,
             return_tensors="pt"

@@ -127,10 +127,11 @@ class StereoSetRunner:
             mask_idxs = inputs["input_ids"] == self._mask_token_id
 
             # TODO: Figure out why tensors in tokenizer output are 3-dim
-
             with torch.no_grad():
                 # Get the probabilities.
-                output = model(input_ids=inputs["input_ids"][0].to(device), attention_mask=inputs["attention_mask"][0].to(device))[0].softmax(dim=-1)
+                output = model(input_ids=inputs["input_ids"][0].to(device),
+                               attention_mask=inputs["attention_mask"][0].to(device),
+                               token_type_ids=inputs["token_type_ids"][0].to(device))[0].softmax(dim=-1)
 
             output = output[mask_idxs[0]]
 

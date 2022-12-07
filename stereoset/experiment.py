@@ -66,7 +66,7 @@ def generate_experiment_id(
     if isinstance(model, str):
         experiment_id += f"_m-{model}"
     if isinstance(model_name_or_path, str):
-        experiment_id += f"_c-{model_name_or_path}"
+        experiment_id += f"_c-{model_name_or_path.replace('/', '-')}"
     if isinstance(bias_type, str):
         experiment_id += f"_t-{bias_type}"
     if isinstance(seed, int):
@@ -92,7 +92,11 @@ if __name__ == "__main__":
     print(f" - batch_size: {args.batch_size}")
     print(f" - seed: {args.seed}")
 
-    model = transformers.LukeForMaskedLM.from_pretrained(args.model_name_or_path)
+    if "luke" in args.model_name_or_path:
+        model = transformers.LukeForMaskedLM.from_pretrained(args.model_name_or_path)
+    else:
+        model = transformers.AutoModelForMaskedLM.from_pretrained(args.model_name_or_path)
+
     model.eval()
     tokenizer = transformers.AutoTokenizer.from_pretrained(args.model_name_or_path)
 
