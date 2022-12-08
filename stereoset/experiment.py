@@ -21,11 +21,11 @@ parser.add_argument(
     action="store",
     type=str,
     default="BertForMaskedLM",
-    choices=[
-        "BertForMaskedLM",
-        "RobertaForMaskedLM",
-        "LukeForMaskedLM",
-    ],
+    #choices=[
+    #    "BertForMaskedLM",
+    #    "RobertaForMaskedLM",
+    #    "LukeForMaskedLM",
+    #],
     help="Model to evalute (e.g., BertForMaskedLM). Typically, these correspond to a HuggingFace "
     "class.",
 )
