@@ -1,13 +1,13 @@
-import argparse
 from collections import Counter, OrderedDict, defaultdict
 import glob
 import json
 import os
 import re
+import argparse
 
 import numpy as np
 
-import dataloader
+from stereoset import dataloader
 
 
 thisdir = os.path.dirname(os.path.realpath(__file__))
