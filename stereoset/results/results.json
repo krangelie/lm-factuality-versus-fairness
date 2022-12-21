@@ -318,5 +318,45 @@
       "SS Score": 58.82679107287867,
       "ICAT Score": 69.50249178070362
     }
+  },
+   "stereoset_m-ColakeForMaskedLM_c-colake": {
+    "intrasentence": {
+      "gender": {
+        "Count": 2313.0,
+        "LM Score": 85.69155813877205,
+        "SS Score": 62.82274756635077,
+        "ICAT Score": 63.71553376715715
+      },
+      "profession": {
+        "Count": 7194.0,
+        "LM Score": 83.8181188919336,
+        "SS Score": 59.21252273043152,
+        "ICAT Score": 68.3745923816546
+      },
+      "race": {
+        "Count": 8928.0,
+        "LM Score": 85.24077458046682,
+        "SS Score": 57.26214401610838,
+        "ICAT Score": 72.86015895950722
+      },
+      "religion": {
+        "Count": 741.0,
+        "LM Score": 85.168512017789,
+        "SS Score": 58.09021585810611,
+        "ICAT Score": 71.38787908703664
+      },
+      "overall": {
+        "Count": 6392.0,
+        "LM Score": 84.76488256276875,
+        "SS Score": 58.70761855071306,
+        "ICAT Score": 70.00287728571716
+      }
+    },
+    "overall": {
+      "Count": 6392.0,
+      "LM Score": 84.76488256276875,
+      "SS Score": 58.70761855071306,
+      "ICAT Score": 70.00287728571716
+    }
   }
 }
