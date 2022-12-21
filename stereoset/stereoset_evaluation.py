@@ -7,41 +7,7 @@ import argparse
 
 import numpy as np
 
-from stereoset import dataloader
-
-
-thisdir = os.path.dirname(os.path.realpath(__file__))
-parser = argparse.ArgumentParser(
-    description="Scores a set of StereoSet prediction files."
-)
-parser.add_argument(
-    "--persistent_dir",
-    action="store",
-    type=str,
-    default=os.path.realpath(os.path.join(thisdir, "..")),
-    help="Directory where all persistent data will be stored.",
-)
-parser.add_argument(
-    "--predictions_file",
-    action="store",
-    type=str,
-    default=None,
-    help="Path to the file containing the model predictions.",
-)
-parser.add_argument(
-    "--predictions_dir",
-    action="store",
-    type=str,
-    default=None,
-    help="Path to the directory containing a set of model predictions.",
-)
-parser.add_argument(
-    "--output_file",
-    action="store",
-    type=str,
-    default=None,
-    help="Path to save the results to.",
-)
+from stereoset.stereoset_setup import dataloader
 
 
 class ScoreEvaluator:
@@ -180,17 +146,17 @@ class ScoreEvaluator:
         return results
 
 
-def parse_file(gold_file, predictions_file):
+def parse_file(cfg, gold_file, predictions_file):
     score_evaluator = ScoreEvaluator(
         gold_file_path=gold_file, predictions_file_path=predictions_file
     )
     overall = score_evaluator.get_overall_results()
     score_evaluator.pretty_print(overall)
 
-    if args.output_file:
-        output_file = args.output_file
-    elif args.predictions_dir != None:
-        predictions_dir = args.predictions_dir
+    if cfg.benchmark.output_file:
+        output_file = cfg.benchmark.output_file
+    elif cfg.benchmark.predictions_dir != None:
+        predictions_dir = cfg.benchmark.predictions_dir
         if predictions_dir[-1] == "/":
             predictions_dir = predictions_dir[:-1]
         output_file = f"{predictions_dir}.json"
@@ -220,25 +186,23 @@ def _extract_split_from_file_path(file_path):
     return split
 
 
-if __name__ == "__main__":
-    args = parser.parse_args()
-
+def run_evaluation(cfg):
     print("Evaluating StereoSet files:")
-    print(f" - predictions_file: {args.predictions_file}")
-    print(f" - predictions_dir: {args.predictions_dir}")
-    print(f" - output_file: {args.output_file}")
+    print(f" - predictions_file: {cfg.benchmark.predictions_file}")
+    print(f" - predictions_dir: {cfg.benchmark.predictions_dir}")
+    print(f" - output_file: {cfg.benchmark.output_file}")
 
-    if args.predictions_dir is not None:
-        predictions_dir = args.predictions_dir
-        if args.predictions_dir[-1] != "/":
-            predictions_dir = args.predictions_dir + "/"
+    if cfg.benchmark.predictions_dir is not None:
+        predictions_dir = cfg.benchmark.predictions_dir
+        if cfg.benchmark.predictions_dir[-1] != "/":
+            predictions_dir = cfg.benchmark.predictions_dir + "/"
         for prediction_file in glob.glob(predictions_dir + "*.json"):
             print()
             print(f"Evaluating {prediction_file}...")
-            parse_file(
-                f"{args.persistent_dir}/test.json", prediction_file
+            parse_file(cfg,
+                f"{cfg.benchmark.persistent_dir}/test.json", prediction_file
             )
     else:
-        parse_file(
-            f"{args.persistent_dir}/test.json", args.predictions_file
+        parse_file(cfg,
+            f"{cfg.benchmark.persistent_dir}/test.json", cfg.benchmark.predictions_file
         )

@@ -3,7 +3,7 @@ import os
 
 import transformers
 
-from stereoset.stereoset import StereoSetRunner
+from stereoset.stereoset_setup import StereoSetRunner
 from models import colake
 
 
@@ -34,8 +34,8 @@ def generate_experiment_id(
 def run_experiment(cfg):
     experiment_id = generate_experiment_id(
         name="stereoset",
-        model=cfg.model.name,
-        model_name_or_path=cfg.model.model_name_or_path,
+        model=cfg.model.model,
+        model_name_or_path="colake" if "colake" in cfg.model.model_name_or_path else cfg.model.model_name_or_path,
         seed=cfg.benchmark.seed,
     )
 
@@ -46,10 +46,10 @@ def run_experiment(cfg):
     print(f" - batch_size: {cfg.benchmark.batch_size}")
     print(f" - seed: {cfg.benchmark.seed}")
 
-    if "luke" in cfg.model.model_name_or_path:
+    if "colake" in cfg.model.model_name_or_path:
+        model = colake.ColakeForMaskedLM(cfg.model.model_name_or_path)
+    elif "luke" in cfg.model.model_name_or_path:
         model = transformers.LukeForMaskedLM.from_pretrained(cfg.model.model_name_or_path)
-    elif "colake" in cfg.model.model_name_or_path:
-        model = colake.ColakeForMaskedLM()
     else:
         model = transformers.AutoModelForMaskedLM.from_pretrained(cfg.model.model_name_or_path)
     model.eval()

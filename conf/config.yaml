@@ -1,6 +1,6 @@
 defaults:
   - _self_
   - benchmark: stereoset # stereoset, bbq
-  - model: bert # bert, roberta, luke, colake
+  - model: colake # bert, roberta, luke, colake
 
 
