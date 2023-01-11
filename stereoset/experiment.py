@@ -4,7 +4,8 @@ import os
 import transformers
 
 from stereoset.stereoset_setup import StereoSetRunner
-from models import colake
+from models.colake import colake
+from models.kepler import kepler
 
 
 thisdir = os.path.dirname(os.path.realpath(__file__))
@@ -35,7 +36,7 @@ def run_experiment(cfg):
     experiment_id = generate_experiment_id(
         name="stereoset",
         model=cfg.model.model,
-        model_name_or_path="colake" if "colake" in cfg.model.model_name_or_path else cfg.model.model_name_or_path,
+        model_name_or_path=cfg.model.model_name_or_path.split("/")[-1].split(".")[0],
         seed=cfg.benchmark.seed,
     )
 
@@ -48,6 +49,8 @@ def run_experiment(cfg):
 
     if "colake" in cfg.model.model_name_or_path:
         model = colake.ColakeForMaskedLM(cfg.model.model_name_or_path)
+    elif "kepler" in cfg.model.model_name_or_path:
+        model = kepler.KeplerForMaskedLM(cfg.model.model_name_or_path)
     elif "luke" in cfg.model.model_name_or_path:
         model = transformers.LukeForMaskedLM.from_pretrained(cfg.model.model_name_or_path)
     else:
@@ -56,6 +59,8 @@ def run_experiment(cfg):
 
     if "colake" in cfg.model.model_name_or_path:
         tokenizer = colake.ColakeTokenizer()
+    elif "kepler" in cfg.model.model_name_or_path:
+        tokenizer = kepler.KeplerTokenizer()
     else:
         tokenizer = transformers.AutoTokenizer.from_pretrained(cfg.model.model_name_or_path)
 
