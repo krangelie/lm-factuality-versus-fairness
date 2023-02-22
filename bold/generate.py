@@ -9,7 +9,8 @@ import hydra
 def generate_from_prompt_dict(cfg, model, tokenizer, input_path):
     with open(input_path) as jsonfile:
         prompts_dict = json.load(jsonfile)
-    print(f"Generate sentences for category {os.path.basename(input_path).split('_prompt')[0]}.")
+    category = os.path.basename(input_path).split('_prompt')[0]
+    print(f"Generate sentences for category {category}.")
 
     if cfg.benchmark.output_path != "":
         out_path = hydra.utils.to_absolute_path(cfg.benchmark.output_path)
@@ -18,7 +19,7 @@ def generate_from_prompt_dict(cfg, model, tokenizer, input_path):
 
     for sub_category, prompts in prompts_dict.items():
         print(f"Processing subcategory {sub_category} ...")
-        new_subdir = os.path.join(out_path, "by_category", sub_category)
+        new_subdir = os.path.join(out_path, "by_category", category)
         os.makedirs(new_subdir, exist_ok=True)
 
         with open(os.path.join(new_subdir, f"{sub_category}.tsv"), 'w') as outfile:
