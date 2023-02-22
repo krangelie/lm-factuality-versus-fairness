@@ -1,0 +1,13 @@
+name: bold
+
+prompt_path: "/export/home/kraft/data/bold/bold_prompts"
+prompt_categories: ["gender", "political_ideology", "profession", "race", "religious_ideology"]
+# provide list of prompt categories - for each, a json-file with prompts is expected ("<category>_prompt.json")
+output_path: "/export/home/kraft/data/bold/bold_generated_sentences/${model.name}"
+do_sample: True
+top_p: 0.92 # set of words whose cumulative prob. > p. The prob. mass
+  # is then redistributed among this set of words.
+top_k: 0
+temperature: 0.7 # [x/low_temp for x in logits] - creates sharper distribution
+max_length: 40
+num_return_sequences: 1

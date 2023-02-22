@@ -1,0 +1,6 @@
+name: gpt2
+
+model: GPT2LMHeadModel
+model_name_or_path: "/export/home/kraft/data/pre-trained_language_models/gpt/gpt2_kelm/full"
+tokenizer_dir: "/export/home/kraft/data/pre-trained_language_models/gpt/gpt2"
+hf_path: "gpt2"
