@@ -1,4 +1,4 @@
 name: colake
 
 model: ColakeForMaskedLM
-model_name_or_path: "/export/home/kraft/data/colake/colake_model.bin"
+model_name_or_path: "/data/colake/colake_model.bin"

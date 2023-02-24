@@ -2,13 +2,13 @@ name: stereoset
 
 mode: experiment # experiment (creates predictions) or evaluation (computes scores)
 
-persistent_dir: "/export/home/kraft/data/stereoset_data" # Directory where all persistent data will be stored.
+persistent_dir: "/data/stereoset_data" # Directory where all persistent data will be stored.
 
 ## Experiment settings
 batch_size: 1 # The batch size to use during StereoSet intrasentence evaluation.
 seed: None # RNG seed. Used for logging in experiment ID.
 
 ## Evaluation settings
-predictions_file: " " #"/export/home/kraft/data/stereoset_data/results/stereoset/stereoset_m-colake_c--export-home-kraft-data-colake-colake_model.bin.json" # Path to the file containing the model predictions.
-predictions_dir: "/export/home/kraft/data/stereoset_data/results/stereoset/" # Path to the directory containing a set of model predictions.
-output_file: "/export/home/kraft/data/stereoset_data/results/stereoset/results.json" # Path to save the results to.
+predictions_file: " " # Path to the file containing the model predictions.
+predictions_dir: "" # Path to the directory containing a set of model predictions.
+output_file: "" # Path to save the results to.
