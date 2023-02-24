@@ -1,6 +1,6 @@
 # IDE & Mac stuff
 .DS_Store
-.idea/
+.idea
 
 # Project directories
 models/
