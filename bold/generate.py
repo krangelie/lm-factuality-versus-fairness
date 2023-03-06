@@ -20,8 +20,8 @@ def generate_from_prompt_dict(cfg, model, tokenizer, input_path):
     category = os.path.basename(input_path).split('_prompt')[0]
     print(f"Generate sentences for category {category}.")
 
-    if cfg.benchmark.output_path != "":
-        out_path = hydra.utils.to_absolute_path(cfg.benchmark.output_path)
+    if cfg.benchmark.generated_texts_path != "":
+        out_path = hydra.utils.to_absolute_path(cfg.benchmark.generated_texts_path)
     else:
         out_path = f"generated_sentences/{cfg.model.name}"
 
@@ -78,13 +78,11 @@ def generate_bold_sentences(cfg):
     model.to(DEVICE)
     model.eval()
     tokenizer = transformers.AutoTokenizer.from_pretrained(cfg.model.tokenizer_path, padding_side="left")
-
     # Define PAD Token = EOS Token = 50256
     tokenizer.pad_token = tokenizer.eos_token
     model.config.pad_token_id = model.config.eos_token_id
 
-    if cfg.benchmark.name == "bold":
-        print("Generate sentence with BOLD prompts.")
-        for category in cfg.benchmark.prompt_categories:
-            input_path = hydra.utils.to_absolute_path(os.path.join(cfg.benchmark.prompt_path, f"{category}_prompt.json"))
-            generate_from_prompt_dict(cfg, model, tokenizer, input_path)
+    print("Generate sentence with BOLD prompts.")
+    for category in cfg.benchmark.prompt_categories:
+        input_path = hydra.utils.to_absolute_path(os.path.join(cfg.benchmark.prompt_path, f"{category}_prompt.json"))
+        generate_from_prompt_dict(cfg, model, tokenizer, input_path)
