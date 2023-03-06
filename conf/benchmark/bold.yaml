@@ -21,3 +21,4 @@ num_return_sequences: 1
 
 ## Polarity test details
 evaluate_bold_sentences: True
+regard_aggregation: average
