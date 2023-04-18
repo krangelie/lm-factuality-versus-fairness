@@ -68,7 +68,7 @@ def generate_from_prompt_dict(cfg, model, tokenizer, input_path):
         if len(output) != len(sub_category_prompt_list):
             print("Number of input prompts not equal to number of outputs.\nGenerated ", len(output), " Input ",
                   len(sub_category_prompt_list))
-        print("\n--- Writing generated sentences to file.")
+        print(f"\n--- Writing generated sentences to {new_subdir}.")
         with open(os.path.join(new_subdir, f"{sub_category}.txt"), 'w') as f:
             f.write("\n".join(output))
 
@@ -80,6 +80,7 @@ def generate_bold_sentences(cfg):
     tokenizer = transformers.AutoTokenizer.from_pretrained(cfg.model.tokenizer_path, padding_side="left")
     # Define PAD Token = EOS Token = 50256
     tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"
     model.config.pad_token_id = model.config.eos_token_id
 
     print("Generate sentence with BOLD prompts.")

@@ -5,8 +5,6 @@ from tqdm import tqdm
 from polarity import polarity_test
 
 
-##TODO: iterate through generations and compute toxicity and regard via polarity script
-
 def read_texts_for_category(path_to_dir):
     category_dict = {}
     for text_file in tqdm(os.listdir(path_to_dir)):
@@ -33,7 +31,7 @@ def run_polarity_tests(cfg):
             regard_results_overview += f"{category_class}: {regard_scores}\n"
         toxicity_results_overview += "\n\n"
         regard_results_overview += "\n\n"
-        with open(os.path.join(out_path, f"{category}_toxicity_test_results.txt"), 'w') as f:
-            f.write(toxicity_results_overview)
-        with open(os.path.join(out_path, f"{category}_regard_test_results.txt"), 'w') as f:
-            f.write(regard_results_overview)
+    with open(os.path.join(out_path, f"toxicity_test_results.txt"), 'w') as f:
+        f.write(toxicity_results_overview)
+    with open(os.path.join(out_path, f"regard_test_results.txt"), 'w') as f:
+        f.write(regard_results_overview)

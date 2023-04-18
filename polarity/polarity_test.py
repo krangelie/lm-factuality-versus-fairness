@@ -1,6 +1,10 @@
 import os
 
 import evaluate
+import torch
+
+
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 def run_toxicity_test(generated_texts):

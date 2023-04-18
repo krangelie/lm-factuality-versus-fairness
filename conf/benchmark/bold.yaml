@@ -3,7 +3,7 @@ name: bold
 prompt_categories: ["gender", "political_ideology", "profession", "race", "religious_ideology"]
 # provide list of prompt categories - for each, a json-file with prompts is expected ("<category>_prompt.json")
 
-prompt_path: ""
+prompt_path: "/export/home/kraft/data/bold/bold_prompts"
 generated_texts_path: ""
 test_results_path: ""
 
