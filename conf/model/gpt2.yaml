@@ -1,6 +1,6 @@
 name: gpt2
 
 model: GPT2LMHeadModel
-model_version: "quarter"
-model_name_or_path: ""
-tokenizer_path: "gpt2"
+model_version: "full" #"quarter"
+model_name_or_path: "/export/home/kraft/data/kelm/output/gpt2-medium/kelm_full"
+tokenizer_path: "gpt2-medium"
