@@ -1,5 +1,5 @@
 # IDE & Mac stuff
-.DS_Store
+*/.DS_Store
 .idea
 
 # Project directories
