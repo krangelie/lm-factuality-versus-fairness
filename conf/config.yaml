@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - benchmark: bold # stereoset, bbq, bold
-  - model: gpt2 # bert, roberta, luke, colake, gpt2
+  - benchmark: lama # stereoset, bbq, bold, lama
+  - model: luke # bert, roberta, luke, colake, gpt2
 
 

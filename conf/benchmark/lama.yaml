@@ -1,0 +1,6 @@
+name: lama
+
+lama_data_dir: "/export/home/kraft/data/lama/"
+results_file: "/export/home/kraft/data/lama/last_results.csv"
+log_dir: "/export/home/kraft/data/lama/output/results/"
+
